@@ -1,0 +1,288 @@
+---
+title: "O BRASIL NAS OLIMPÍADAS: DE ATENAS-1896 À RIO-2016"
+author: "Saulo Gil"
+date: "`r Sys.Date()`"
+output:
+    rmdformats::material:
+    self_contained: true
+    thumbnails: true
+    lightbox: true
+    gallery: false
+    highlight: tango
+---
+```{css echo=FALSE}
+
+.header-panel {
+  background-color: #006895
+}
+
+.pages h1 {
+  color: #003c96;
+}
+
+p {
+    text-align: justify;
+    color: #1d3e81;
+    font-size: 22px;
+}
+```
+
+```{r include=FALSE}
+
+library(ggplot2)
+
+```
+
+```{r include=FALSE}
+
+olympics <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2021/2021-07-27/olympics.csv')
+
+```
+# OLIMPÍADAS: O MAIOR EVENTO ESPORTIVO MUNDIAL 
+Os Jogos Olímpicos de Verão é o maior evento multiesportivo do mundo e, com algumas exceções, é realizado a cada quatro anos. Apesar dos relatos históricos de que já haviam competições esportivas similares na Grécia e Roma antiga, os Jogos Olímpicos da era moderna iniciaram em 1896 em Atenas, Grécia, quando Pierre de Coubertin, um pedagogo e historiador francês, buscou promover as inter-relações internacionais por meio da competição esportiva.
+Resumidamente, o Comitê Olímpico Internacional (COI) organiza os jogos e supervisiona os preparativos da cidade-sede. Em cada evento olímpico, medalhas de ouro são concedidas para o primeiro lugar, medalhas de prata para o segundo lugar e medalhas de bronze para o terceiro lugar. Em 2016 no Rio de Janeiro foram realizados 306 eventos com 11.238 competidores, sendo 6.179 homens e 5.059 mulheres, de 206 nações.
+```{r echo=FALSE}
+knitr::include_graphics("../imagens/olimpiada.jpg")
+```
+
+---
+
+# O BRASIL NAS OLIMPÍADAS
+O Brasil iniciou sua participação nos jogos em 1920, em Antuérpia, Bélgica e, com exceção de 1928 em Amsterdã, Holanda, no qual o Brasil não participou devido problemas políticos, todas as edições a partir de 1928 contaram com a presença do Brasil.
+
+Não é novidade que o Brasil não figura entre os países com maior número de medalhas tais como Estados Unidos e China, em particular, quando considerado apenas os esportes indivíduais que excluem os esportes que o Brasil é considerado um potência esportiva como o Futebol e o Voleibol. Contudo, na maioria das edições nossos atletas de modalidades indivíduais estão sempre nos colocando em cima do pódio (Figura 1) seja na categoria masculina ou feminina (Figura 2). 
+```{r include=FALSE}
+# Todas medalhas conquistadas pelo Brasil ---------------------------------
+
+# esportes individuais
+
+medals_individuals <-
+  olympics |>
+  dplyr::filter(team == "Brazil",
+                season == "Summer",
+                !sport == "Football",
+                !sport == "Basketball",
+                !sport == "Volleyball",
+                !event == "Athletics Men's 4 x 100 metres Relay",
+                !event == "Canoeing Men's Canadian Doubles, 1,000 metres",
+                !event == "Sailing Men's Two Person Keelboat",
+                !event == "Sailing Mixed Multihull",
+                !event == "Sailing Mixed Three Person Keelboat",
+                !event == "Sailing Mixed Two Person Heavyweight Dinghy",
+                !event == "Sailing Mixed Two Person Keelboat",
+                !event == "Swimming Men's 4 x 100 metres Freestyle Relay",
+                !event == "Swimming Men's 4 x 200 metres Freestyle Relay",
+                !event == "Swimming Men's 400 metres Individual Medley",
+                !event == "Equestrianism Mixed Jumping, Team",
+                !event == "Sailing Women's Two Person Dinghy",
+                !is.na(medal)) |>
+  dplyr::mutate(sex = dplyr::case_when(sex == "F" ~ "Mulheres",
+                                       sex == "M" ~ "Homens"))
+```
+```{r echo=FALSE, out.width="100%"}
+# seperados por sexo; 
+
+plotly::ggplotly(medals_individuals |>
+  ggplot(aes(x = medal, fill = medal)) +
+  geom_bar() +
+  labs(title = "Figura 1. Total de medalhas do Brasil em esportes indivíduais",
+       subtitle = "entre os anos de 1896 até 2016") +
+  xlab("") +
+  ylab("") +
+  ggthemes::theme_economist_white() +
+  theme(plot.title = element_text(face = "bold",
+                                  hjust = 0.5,
+                                  size = 20),
+        plot.subtitle = element_text(face = "bold",
+                                     hjust = 0.5,
+                                     size = 18),
+        axis.text.y = element_text(size = 12,
+                                   face = "bold"),
+        axis.title.x = element_blank(),
+        axis.text.x.bottom = element_blank(),
+        axis.ticks.x = element_blank(),
+        legend.title = element_text(colour = "white"),
+        legend.position = "top") +
+  scale_fill_manual(values = c("#9e6003",
+                               "#d1af02",
+                               "#91918e")))
+
+# Seperados por sexo 
+
+plotly::ggplotly(medals_individuals |>
+  ggplot(aes(x = medal, fill = medal)) +
+  geom_bar() +
+  xlab("") +
+  ylab("") +
+  ggthemes::theme_economist_white() +
+  theme(plot.title = element_text(face = "bold",
+                                  hjust = 0.5,
+                                  size = 25),
+        axis.text.y = element_text(size = 12,
+                                   face = "bold"),
+        axis.title.x = element_blank(),
+        axis.text.x.bottom = element_blank(),
+        axis.ticks.x = element_blank(),
+        legend.title = element_text(colour = "white"),
+        legend.position = "top") +
+  scale_fill_manual(values = c("#9e6003",
+                               "#d1af02",
+                               "#91918e")) +
+  coord_flip() +
+  facet_wrap("sex", scales = "fixed")
+  )
+```
+---
+
+# EVOLUÇÃO DO DESEMPENHO OLIMPÍCO
+
+Como já mencionado, a primeira participação do Brasil nos Jogos Olimpícos foi em 1920, em Antuérpia, Bélgica e, já na primeira participação conquistamos 4 medalhas com Afrânio, Guilherme, Fernando e  Sebastião, todos do tiro esportivo. A partir daí ficamos um período sem medalhas (30 anos), mas em 1952, nos Jogos de Helsinque, Finlândia acabamos com esse "jejum de medalhas". Daí então, a cada evento temos apresentado uma melhora no desempenho que pode ser observado pelo crescente número de medalhas conquistadas. Com relação a participação das mulheres nos jogos, as primeiras medalhas vieram em 2008 com Natalia Falavigna (Bronze - taekwondo), Maurren Magi (Ouro - salto em distância) e Ketleyn Quadros (Bronze - Judô). A Tabela 1 ilustra em detalhes todos os medalhistas brasileiros.  
+
+```{r echo=FALSE}
+# Agrupando a base por ano
+
+olympics |>
+  dplyr::filter(team == "Brazil",
+                season == "Summer",
+                !sport == "Football",
+                !sport == "Basketball",
+                !sport == "Volleyball",
+                !event == "Athletics Men's 4 x 100 metres Relay",
+                !event == "Canoeing Men's Canadian Doubles, 1,000 metres",
+                !event == "Sailing Men's Two Person Keelboat",
+                !event == "Sailing Mixed Multihull",
+                !event == "Sailing Mixed Three Person Keelboat",
+                !event == "Sailing Mixed Two Person Heavyweight Dinghy",
+                !event == "Sailing Mixed Two Person Keelboat",
+                !event == "Swimming Men's 4 x 100 metres Freestyle Relay",
+                !event == "Swimming Men's 4 x 200 metres Freestyle Relay",
+                !event == "Swimming Men's 400 metres Individual Medley",
+                !event == "Equestrianism Mixed Jumping, Team",
+                !event == "Sailing Women's Two Person Dinghy",
+                !is.na(medal)) |>
+  dplyr::arrange(year) |> 
+  dplyr::select(name, sex, age, year, city, sport, event, medal) |> 
+  DT::datatable(rownames = FALSE,
+                colnames = c("Nome do atleta",
+                             "sexo",
+                             "Idade",
+                             "Ano",
+                             "Cidade",
+                             "Esporte",
+                             "Prova",
+                             "Medalha"),
+                caption = "Tabela 1. Medalhistas brasileiros por ano e sexo (masculino = M; feminino = F)",
+                options = list(pageLength = 5))
+```
+```{r include=FALSE}
+# Agrupando a base por ano
+
+medal_year <-
+  olympics |>
+  dplyr::filter(team == "Brazil",
+                season == "Summer",
+                !sport == "Football",
+                !sport == "Basketball",
+                !sport == "Volleyball",
+                !event == "Athletics Men's 4 x 100 metres Relay",
+                !event == "Canoeing Men's Canadian Doubles, 1,000 metres",
+                !event == "Sailing Men's Two Person Keelboat",
+                !event == "Sailing Mixed Multihull",
+                !event == "Sailing Mixed Three Person Keelboat",
+                !event == "Sailing Mixed Two Person Heavyweight Dinghy",
+                !event == "Sailing Mixed Two Person Keelboat",
+                !event == "Swimming Men's 4 x 100 metres Freestyle Relay",
+                !event == "Swimming Men's 4 x 200 metres Freestyle Relay",
+                !event == "Swimming Men's 400 metres Individual Medley",
+                !event == "Equestrianism Mixed Jumping, Team",
+                !event == "Sailing Women's Two Person Dinghy",
+                !is.na(medal)) |>  
+  dplyr::group_by(year) |>
+  dplyr::count(medal)
+```
+```{r echo=FALSE, message=FALSE, out.width="100%"}
+# Figura 2
+
+plotly::ggplotly(medal_year |>
+  dplyr::select(year, medal, n) |>
+  ggplot(aes(x = year, y = n, fill = medal)) +
+  geom_col() +
+  labs(title = "Figura 2. Número total de medalhas do Brasil por ano (1896-2016)") +
+  xlab("Anos") +
+  ylab("") +
+  ggthemes::theme_economist_white() +
+  theme(plot.title = element_text(face = "bold",
+                                  hjust = 0.5,
+                                  size = 16),
+        axis.text.y = element_text(size = 12,
+                                   face = "bold"),
+        legend.title = element_text(colour = "white"),
+        legend.position = "top") +
+  scale_x_continuous(n.breaks = 10) +
+  scale_fill_manual(values = c("#9e6003",
+                               "#d1af02",
+                               "#91918e")
+                    )
+)
+```
+---
+
+# MAIORES MEDALHISTAS BRASILEIROS
+
+De fato, o Brasil ainda não é um potência em número de medalhas olimpícas, porém conforme observado, estamos sendo sempre bem representados e, de maneira importante, a cada evento temos apresentado uma melhora no desempenho. Até 2016 tinhamos 53 medalhistas olimpícos dos quais destacam-se Cesar Cielo, Gustavo Borges, ambos na natação, e Robert Scheidt, da vela, todos com 3 medalhas olimpícas. A tabela 2 ilustra os medalhistas brasileiros que subiram no pódio mais de uma vez. 
+
+```{r include=FALSE}
+# Filtrando a base com apenas os medalhistas
+
+medalhistas <-
+  olympics |>
+  dplyr::filter(team == "Brazil",
+                season == "Summer",
+                !sport == "Football",
+                !sport == "Basketball",
+                !sport == "Volleyball",
+                !event == "Athletics Men's 4 x 100 metres Relay",
+                !event == "Canoeing Men's Canadian Doubles, 1,000 metres",
+                !event == "Sailing Men's Two Person Keelboat",
+                !event == "Sailing Mixed Multihull",
+                !event == "Sailing Mixed Three Person Keelboat",
+                !event == "Sailing Mixed Two Person Heavyweight Dinghy",
+                !event == "Sailing Mixed Two Person Keelboat",
+                !event == "Swimming Men's 4 x 100 metres Freestyle Relay",
+                !event == "Swimming Men's 4 x 200 metres Freestyle Relay",
+                !event == "Swimming Men's 400 metres Individual Medley",
+                !event == "Equestrianism Mixed Jumping, Team",
+                !event == "Sailing Women's Two Person Dinghy",
+                !is.na(medal)) |>
+  dplyr::select(name)
+
+# criando um freqtable
+
+medalhistas <- janitor::tabyl(medalhistas$name)
+```
+```{r echo=FALSE, fig.align='center'}
+medalhistas |>
+  dplyr::select(`medalhistas$name`, n) |> 
+  dplyr::filter(n > 1) |> 
+  DT::datatable(rownames = FALSE,
+                colnames = c("Nome do atleta", "Número de medalhas"),
+                caption = "Tabela 2. Medalhistas brasileiros",
+                options = list(pageLength = 5))
+
+```
+---
+
+# CONSIDERAÇÕES FINAS
+
+Organizado pelo Comitê Olímpico Internacional a cada 4 anos, os Jogos Olímpicos é o maior evento esportivo do mundo envolvendo milhares de competidores de diferentes nações.
+No ano de 1920 em Amsterdã, Holanda, o Brasil iniciou sua participação neste mega evento esportivo e, neste mesmo evento, já garantiu as primeiras medalhas. Embora ainda não somos uma potência olimpíca, o desempenho do Brasil vem melhorando de modo que podemos observar um crescente número de medalhas conquistadas a cada evento. Finalmente, apesar desta base de dados não conter informações sobre os Jogos Olimpícos de Tóquio, Japão, que acabaram de se encerrar, vale destacar que o Brasil obteve o melhor desempenho de todos os tempos com um total de 21 medalhas sendo 7 de ouro, 6 de prata e 8 de bronze.
+
+---
+
+# FONTES
+
+1. [120 years of Olympic history: athletes and results](https://www.kaggle.com/heesoo37/120-years-of-olympic-history-athletes-and-results)
+
+---
+
+2. [Summer Olympic Games](https://en.wikipedia.org/wiki/Summer_Olympic_Games)
